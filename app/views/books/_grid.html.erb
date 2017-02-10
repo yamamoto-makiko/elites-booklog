@@ -18,7 +18,10 @@
       <%= book.title %>
     </div>
     <div class="info">
-
+      <!-- 下記を追加 -->
+      <div class="bookmark">
+        ♥ <%= book.bookmarks.length %>
+      </div>
     </div>
     <div class="grid_footer">
       <%= render 'books/social_buttons', url: book_url(book.id) %>
