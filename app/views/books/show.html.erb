@@ -69,7 +69,7 @@
         <!--<%#= label :book, :category_name %>: <%#= @category.where(id: @book.category_id).name %>-->
         <%#= debug @category.class %>
         <!--<!%= label :book, :category_name %>: <!%= @category.category_name %>-->
-        <%= label :book, :category_name %>: <%= @book.category.category_name %>
+        <%= label :book, :category %>: <%= @book.category.name %>
       </div>
 
       <div class="info">
