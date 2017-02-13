@@ -6,13 +6,24 @@ class BooksController < ApplicationController
     # @books = Book.order('updated_at DESC')
     # @books = Book.includes(:bookmarks).order('updated_at DESC')
     # @books = Book.includes(:bookmarks, :reviews).order('updated_at DESC')
+    @category = Category.all
     if user_signed_in? && params[:ft] && params[:ft] == 'my'
-      @books = Book.includes(:bookmarks, :reviews, :user).where(user_id: current_user.id).order('updated_at DESC')
+      @books = Book.includes(:bookmarks, :reviews, :user, :category).where(user_id: current_user.id)
+      @ft = 'my'
     elsif user_signed_in? && params[:ft] && params[:ft] == 'bookmark'
-      @books = Book.joins(:bookmarks).where('bookmarks.user_id = ?', current_user.id).order('updated_at DESC')
+      @books = Book.joins(:bookmarks).where('bookmarks.user_id = ?', current_user.id)
+      @ft = 'bookmark'
     else
-      @books = Book.includes(:bookmarks, :reviews, :user).order('updated_at DESC')
+      @books = Book.includes(:bookmarks, :reviews, :user, :category)
+      @ft = 'all'
     end
+    
+    if params[:category]
+      @books = @books.category_filter(params[:category])
+      @category_id = params[:category].to_i
+    end
+    
+    @books = @books.order('updated_at DESC')
   end
   
   def show
@@ -74,7 +85,7 @@ class BooksController < ApplicationController
 
   private
   def input_params
-    params.require(:book).permit(:title, :author, :publisher, :price, :publish_date, :caption, :image)
+    params.require(:book).permit(:title, :author, :publisher, :price, :publish_date, :caption, :image, :category_id)
   end
   
 end
